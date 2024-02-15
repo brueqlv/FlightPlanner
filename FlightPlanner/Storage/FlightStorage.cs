@@ -14,6 +14,16 @@ namespace FlightPlanner.Storage
             _flights.Add(flight);
         }
 
+        public static void DeleteFlightById(int id)
+        {
+            var flightToRemove = GetFlightById(id);
+
+            if (flightToRemove != null)
+            {
+                _flights.Remove(flightToRemove);
+            }
+        }
+
         public static Flight? GetFlightById(int id)
         {
             return _flights.FirstOrDefault(flight => flight.Id == id);
