@@ -73,5 +73,36 @@ namespace FlightPlanner.Storage
                                      && flight.To.AirportCode.ToLower().Trim() ==
                                      flight.To.AirportCode.ToLower().Trim());
         }
+
+        public static List<Airport> SearchAirports(string keyword)
+        {
+            keyword = keyword.ToLower().Trim();
+
+            List<Airport> airports = GetAllAirports().ToList();
+            List<Airport> resultAirports = new();
+
+            foreach (Airport airport in airports)
+            {
+                if (airport.City.ToLower().Contains(keyword) || airport.Country.ToLower().Contains(keyword) || airport.AirportCode.ToLower() == keyword)
+                {
+                    resultAirports.Add(airport);
+                }
+            }
+
+            return resultAirports;
+        }
+
+        public static HashSet<Airport> GetAllAirports()
+        {
+            HashSet<Airport> airports = new();
+
+            foreach (var flight in _flights)
+            {
+                airports.Add(flight.From);
+                airports.Add(flight.To);
+            }
+
+            return airports;
+        }
     }
 }
