@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design.Serialization;
-using FlightPlanner.Storage;
-using Microsoft.AspNetCore.Http;
+﻿using FlightPlanner.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner.Controllers
@@ -9,12 +7,13 @@ namespace FlightPlanner.Controllers
     [ApiController]
     public class CleanupApiController : ControllerBase
     {
+        private InMemoryFlightStorage _flightStorage = new InMemoryFlightStorage();
         [HttpPost]
         [Route("clear")]
         public IActionResult Clear()
         {
-            FlightStorage.Clear();
-            return Ok();  //Jāpievieno funkcionalitāte
+            _flightStorage.Clear();
+            return Ok();
         }
     }
 }
