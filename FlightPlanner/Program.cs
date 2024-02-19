@@ -1,5 +1,10 @@
 using FlightPlanner.Handlers;
+using FlightPlanner.Interfaces;
+using FlightPlanner.Models;
+using FlightPlanner.Storage;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +18,17 @@ builder.Services.AddAuthentication("BasicAuthentication")
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//builder.Services.AddSingleton<IFlightService, InMemoryFlightStorage>();
+builder.Services.AddScoped<IFlightService, DatabaseFlightStorage>();
+
+builder.Services.AddDbContext<FlightDbContext>(option =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    option.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+
+    option.UseSqlServer(connectionString);
+}, ServiceLifetime.Scoped);
 
 var app = builder.Build();
 

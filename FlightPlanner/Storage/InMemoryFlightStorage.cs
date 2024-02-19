@@ -9,12 +9,14 @@ namespace FlightPlanner.Storage
         private static int _id;
         private static object _locker = new();
 
-        public void AddFlight(Flight flight)
+        public Flight AddFlight(Flight flight)
         {
             lock (_locker)
             {
                 flight.Id = _id++;
                 _flights.Add(flight);
+
+                return flight;
             }
         }
 
@@ -31,11 +33,11 @@ namespace FlightPlanner.Storage
         public List<Flight> SearchFlights(SearchFlightRequest request)
         {
             var flights = new List<Flight>();
-            DateTime requestDepartureDateTime = DateTime.Parse(request.DepartureDate);
+            var requestDepartureDateTime = DateTime.Parse(request.DepartureDate);
 
             foreach (var flight in _flights)
             {
-                DateTime flightDateTime = DateTime.Parse(flight.DepartureTime);
+                var flightDateTime = DateTime.Parse(flight.DepartureTime);
                 if (string.Equals(flight.From.AirportCode, request.From, StringComparison.OrdinalIgnoreCase) &&
                     string.Equals(flight.To.AirportCode, request.To, StringComparison.OrdinalIgnoreCase))
                 {
@@ -103,7 +105,7 @@ namespace FlightPlanner.Storage
                                          f.ArrivalTime == flight.ArrivalTime
                                          && f.From.AirportCode.ToLower().Trim() ==
                                          flight.From.AirportCode.ToLower().Trim()
-                                         && flight.To.AirportCode.ToLower().Trim() ==
+                                         && f.To.AirportCode.ToLower().Trim() ==
                                          flight.To.AirportCode.ToLower().Trim());
             }
         }
